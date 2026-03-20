@@ -10,6 +10,8 @@ spec:
     type: host
   contributes:
     tools:
+      - id: agent/discover
+        path: tools/discover.yaml
       - id: agent/spawn
         path: tools/spawn.yaml
       - id: agent/spawn-parallel

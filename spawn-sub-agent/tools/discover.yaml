@@ -1,0 +1,17 @@
+id: agent/discover
+kind: tool
+description: >
+  Discover what agents (profiles) are available in this environment. Returns
+  each agent's name, description, capabilities, expected input, and output
+  format. Use this before spawning sub-agents to find the right agent for
+  a task instead of hard-coding profile names.
+inputSchema:
+  type: object
+  properties: {}
+  required: []
+execution:
+  mode: host
+  operation: discover-agents
+  timeout: 5
+risk:
+  level: low
