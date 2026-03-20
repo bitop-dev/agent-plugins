@@ -1,34 +1,49 @@
-# agent-plugins/
+# agent-plugins
 
-The `agent-plugins/` directory contains local plugin bundles used alongside the core `agent` repository for development, testing, and examples.
+Plugin package bundles for the agent framework.
 
-Important distinction:
+**Full documentation:** https://github.com/bitop-dev/agent-docs/blob/main/plugins/overview.md
 
-- this directory is intentionally separate from the core `agent` repository
-- but the bundles inside it are not core agent runtime code
-- they are plugin manifests and assets that the agent can discover locally
+## Packages
 
-So in practice:
+| Plugin | Runtime | Category | Description |
+|---|---|---|---|
+| `core-tools` | host | integration | Core local file and shell tools |
+| `github-cli` | command | integration | GitHub CLI integration |
+| `json-tool` | command | integration | JSON stdin/stdout tool |
+| `mcp-filesystem` | mcp | bridge | Filesystem MCP bridge |
+| `python-tool` | command | integration | Python script runner |
+| `send-email` | http | integration | Email drafting and sending |
+| `spawn-sub-agent` | host | orchestration | Sub-agent delegation |
+| `web-research` | http | integration | Web research and search |
 
-- `../agent/cmd/agent` and `../agent/internal/` are the core framework and host
-- `agent-plugins/` contains example or first-party plugin bundles
-- plugin runtime executables still live separately under `../agent/_testing/runtimes/`, for example:
-  - `_testing/runtimes/send-email-plugin`
-  - `_testing/runtimes/web-research-plugin`
-- plugin-owned example profiles now live with the matching plugin package, for example:
-  - `send-email/examples/profiles/`
-  - `web-research/examples/profiles/`
-  - `spawn-sub-agent/examples/profiles/`
+## Adding a plugin
 
-This keeps the core agent small while giving plugin bundles their own home.
+Create a directory with a `plugin.yaml`:
 
-If we build a real plugin registry later, this repository is the natural starting point for published plugin packages.
+```yaml
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: my-plugin
+  version: 0.1.0
+  description: What this plugin does
+spec:
+  category: integration
+  runtime:
+    type: http        # http | mcp | command | host
+  requires:
+    framework: ">=0.1.0"
+```
 
-The core `agent` repository still keeps testing profiles under `../agent/_testing/profiles/`.
+See [building-plugins](https://github.com/bitop-dev/agent-docs/blob/main/core/building-plugins.md) for the full guide.
 
-Registry server planning and build docs:
+## Related repos
 
-- `../agent-registry/README.md`
-- `../agent-registry/docs/plugin-registry-server-plan.md`
-- `../agent-registry/docs/plugin-registry-contract.md`
-- `../agent-registry/docs/registry-server-build-guide.md`
+| Repo | Purpose |
+|---|---|
+| [agent-docs](https://github.com/bitop-dev/agent-docs) | All documentation |
+| [agent-registry](https://github.com/bitop-dev/agent-registry) | Serves these packages over HTTP |
+| [agent](https://github.com/bitop-dev/agent) | Installs and runs these packages |
+
+See [WHERE-WE-ARE.md](WHERE-WE-ARE.md) for current status.
