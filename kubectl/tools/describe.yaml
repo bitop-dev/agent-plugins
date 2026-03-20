@@ -1,0 +1,30 @@
+id: k8s/describe
+kind: tool
+description: Describe a Kubernetes resource in detail — shows status, conditions, events, and configuration
+inputSchema:
+  type: object
+  properties:
+    resource:
+      type: string
+      description: Resource type (pod, deployment, service, node, etc.)
+    name:
+      type: string
+      description: Resource name
+    namespace:
+      type: string
+      description: Kubernetes namespace
+  required:
+    - resource
+    - name
+execution:
+  mode: command
+  argv:
+    - describe
+    - "{{resource}}"
+    - "{{name}}"
+    - -n
+    - "{{namespace}}"
+    - "--context={{config.context}}"
+  timeout: 15
+risk:
+  level: low

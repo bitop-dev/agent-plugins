@@ -1,0 +1,45 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: slack
+  version: 0.1.0
+  description: Post messages to Slack via Incoming Webhooks or the Web API
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["./bin/slack-tool"]
+
+  contributes:
+    tools:
+      - id: slack/post-message
+        path: tools/post-message.yaml
+      - id: slack/post-blocks
+        path: tools/post-blocks.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+
+  configSchema:
+    type: object
+    properties:
+      webhookURL:
+        type: string
+        description: Slack Incoming Webhook URL (preferred — simpler setup)
+      token:
+        type: string
+        secret: true
+        description: Slack Bot OAuth token (xoxb-...) for Web API (alternative to webhookURL)
+    required: []
+
+  permissions:
+    network:
+      outbound:
+        - https
+    sensitiveActions:
+      - slack/post-message
+      - slack/post-blocks
+
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

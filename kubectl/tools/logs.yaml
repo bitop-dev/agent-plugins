@@ -1,0 +1,37 @@
+id: k8s/logs
+kind: tool
+description: Get logs from a Kubernetes pod or deployment
+inputSchema:
+  type: object
+  properties:
+    name:
+      type: string
+      description: Pod or deployment name (prefix with "deployment/" for deployments)
+    namespace:
+      type: string
+      description: Kubernetes namespace
+    container:
+      type: string
+      description: Container name (required if pod has multiple containers)
+    tail:
+      type: integer
+      description: Number of recent log lines to return (default 50)
+    previous:
+      type: boolean
+      description: Return logs from the previous terminated container instance
+  required:
+    - name
+execution:
+  mode: command
+  argv:
+    - logs
+    - "{{name}}"
+    - -n
+    - "{{namespace}}"
+    - "-c"
+    - "{{container}}"
+    - "--tail={{tail}}"
+    - "--context={{config.context}}"
+  timeout: 20
+risk:
+  level: low

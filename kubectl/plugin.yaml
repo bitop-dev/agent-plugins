@@ -1,0 +1,48 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: kubectl
+  version: 0.1.0
+  description: Kubernetes CLI integration — get pods, deployments, logs, events, and namespaces via kubectl
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["kubectl"]
+
+  contributes:
+    tools:
+      - id: k8s/get-pods
+        path: tools/get-pods.yaml
+      - id: k8s/get-deployments
+        path: tools/get-deployments.yaml
+      - id: k8s/get-events
+        path: tools/get-events.yaml
+      - id: k8s/logs
+        path: tools/logs.yaml
+      - id: k8s/get-namespaces
+        path: tools/get-namespaces.yaml
+      - id: k8s/describe
+        path: tools/describe.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+
+  configSchema:
+    type: object
+    properties:
+      context:
+        type: string
+      namespace:
+        type: string
+    required: []
+
+  permissions:
+    network:
+      outbound:
+        - https
+    sensitiveActions: []
+
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

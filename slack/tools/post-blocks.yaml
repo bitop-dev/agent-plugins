@@ -1,0 +1,26 @@
+id: slack/post-blocks
+kind: tool
+description: >
+  Post a structured Slack message using Block Kit blocks. Supports rich formatting
+  with sections, headers, dividers, context blocks, and markdown fields.
+  See https://api.slack.com/block-kit for block types and structure.
+inputSchema:
+  type: object
+  properties:
+    blocks:
+      type: array
+      description: Array of Slack Block Kit block objects
+    text:
+      type: string
+      description: Fallback plain text for notifications (shown in push notifications and channel previews)
+    channel:
+      type: string
+      description: Channel name or ID. Required when using token auth.
+  required:
+    - blocks
+execution:
+  mode: command
+  operation: post-blocks
+  timeout: 15
+risk:
+  level: high

@@ -12,6 +12,8 @@ spec:
     tools:
       - id: agent/spawn
         path: tools/spawn.yaml
+      - id: agent/spawn-parallel
+        path: tools/spawn-parallel.yaml
     prompts:
       - id: agent/delegation-guidance
         path: prompts/delegation.md

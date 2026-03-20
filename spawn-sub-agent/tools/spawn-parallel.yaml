@@ -1,0 +1,34 @@
+id: agent/spawn-parallel
+kind: tool
+description: >
+  Spawn multiple sub-agent tasks concurrently and wait for all to complete.
+  Each task runs independently in parallel. All results are returned together
+  in order when every task finishes. Use this instead of multiple agent/spawn
+  calls when the tasks are independent — it is significantly faster.
+inputSchema:
+  type: object
+  properties:
+    tasks:
+      type: array
+      description: List of independent tasks to run concurrently
+      items:
+        type: object
+        properties:
+          task:
+            type: string
+            description: The task to execute
+          profile:
+            type: string
+            description: Profile name for this sub-agent
+          maxTurns:
+            type: integer
+            description: Maximum turns for this sub-agent (default 6)
+        required:
+          - task
+  required:
+    - tasks
+execution:
+  mode: host
+  operation: spawn-sub-agents-parallel
+risk:
+  level: high

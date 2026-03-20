@@ -1,0 +1,25 @@
+id: k8s/get-deployments
+kind: tool
+description: List deployments in a Kubernetes namespace with ready/desired replica counts
+inputSchema:
+  type: object
+  properties:
+    namespace:
+      type: string
+      description: Kubernetes namespace (default "default")
+    selector:
+      type: string
+      description: Label selector to filter deployments
+  required: []
+execution:
+  mode: command
+  argv:
+    - get
+    - deployments
+    - -n
+    - "{{namespace}}"
+    - "--selector={{selector}}"
+    - "--context={{config.context}}"
+  timeout: 15
+risk:
+  level: low

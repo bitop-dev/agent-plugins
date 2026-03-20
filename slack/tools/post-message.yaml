@@ -1,0 +1,26 @@
+id: slack/post-message
+kind: tool
+description: Post a plain text or markdown message to a Slack channel via webhook or API token
+inputSchema:
+  type: object
+  properties:
+    text:
+      type: string
+      description: Message text (supports Slack mrkdwn formatting — *bold*, _italic_, `code`, >quote)
+    channel:
+      type: string
+      description: Channel name or ID (e.g. "#alerts" or "C012AB3CD"). Required when using token auth; ignored for webhooks.
+    username:
+      type: string
+      description: Display name to post as (overrides bot name)
+    icon_emoji:
+      type: string
+      description: Emoji to use as the icon (e.g. ":robot_face:")
+  required:
+    - text
+execution:
+  mode: command
+  operation: post-message
+  timeout: 15
+risk:
+  level: high

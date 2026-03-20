@@ -1,0 +1,30 @@
+id: k8s/get-pods
+kind: tool
+description: List pods in a Kubernetes namespace with their status, ready count, restarts, and age
+inputSchema:
+  type: object
+  properties:
+    namespace:
+      type: string
+      description: Kubernetes namespace (default "default", use "--all-namespaces" for all)
+    selector:
+      type: string
+      description: Label selector to filter pods (e.g. "app=myapp")
+    all_namespaces:
+      type: boolean
+      description: List pods across all namespaces
+  required: []
+execution:
+  mode: command
+  argv:
+    - get
+    - pods
+    - -n
+    - "{{namespace}}"
+    - "--selector={{selector}}"
+    - "-o"
+    - wide
+    - "--context={{config.context}}"
+  timeout: 15
+risk:
+  level: low

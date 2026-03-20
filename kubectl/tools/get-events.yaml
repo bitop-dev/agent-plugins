@@ -1,0 +1,26 @@
+id: k8s/get-events
+kind: tool
+description: List recent Kubernetes events in a namespace, sorted by time. Useful for diagnosing failures, OOMKills, and scheduling issues.
+inputSchema:
+  type: object
+  properties:
+    namespace:
+      type: string
+      description: Kubernetes namespace
+    field_selector:
+      type: string
+      description: Field selector to filter events (e.g. "reason=OOMKilling" or "involvedObject.name=mypod")
+  required: []
+execution:
+  mode: command
+  argv:
+    - get
+    - events
+    - -n
+    - "{{namespace}}"
+    - "--field-selector={{field_selector}}"
+    - "--sort-by=.lastTimestamp"
+    - "--context={{config.context}}"
+  timeout: 15
+risk:
+  level: low

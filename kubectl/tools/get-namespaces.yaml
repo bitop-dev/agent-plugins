@@ -1,0 +1,16 @@
+id: k8s/get-namespaces
+kind: tool
+description: List all Kubernetes namespaces in the cluster
+inputSchema:
+  type: object
+  properties: {}
+  required: []
+execution:
+  mode: command
+  argv:
+    - get
+    - namespaces
+    - "--context={{config.context}}"
+  timeout: 10
+risk:
+  level: low
