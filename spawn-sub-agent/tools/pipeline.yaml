@@ -1,0 +1,47 @@
+id: agent/pipeline
+kind: tool
+description: >
+  Execute a multi-step pipeline where agent outputs flow between steps.
+  Each step runs an agent profile with a task. Use the "as" field to name
+  each step's output, then reference it in later steps with {{name}}.
+  Steps with a "parallel" array run their sub-steps concurrently.
+  The pipeline handles errors gracefully — failed steps report errors
+  but don't block subsequent steps.
+inputSchema:
+  type: object
+  properties:
+    steps:
+      type: array
+      description: >
+        Ordered list of pipeline steps. Each step has:
+        - agent: profile name to run
+        - task: task string (supports {{var}} expansion from prior step outputs)
+        - as: variable name to store this step's output (referenced as {{name}} in later steps)
+        - context: optional structured context (values support {{var}} expansion)
+        - maxTurns: optional max model turns (default 6)
+        - parallel: optional array of steps to run concurrently instead of using agent
+      items:
+        type: object
+        properties:
+          agent:
+            type: string
+          task:
+            type: string
+          as:
+            type: string
+          context:
+            type: object
+          maxTurns:
+            type: integer
+          parallel:
+            type: array
+        required:
+          - task
+  required:
+    - steps
+execution:
+  mode: host
+  operation: run-pipeline
+  timeout: 300
+risk:
+  level: high
