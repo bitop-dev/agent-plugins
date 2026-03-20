@@ -1,0 +1,54 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: grafana-alerts
+  version: 0.1.0
+  description: Grafana alert events, Prometheus metrics, and Loki logs via the Grafana REST API
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["./bin/grafana-tool"]
+    envMapping:
+      grafanaURL: GRAFANA_URL
+      grafanaAPIKey: GRAFANA_API_KEY
+
+  contributes:
+    tools:
+      - id: grafana/alert-events
+        path: tools/alert-events.yaml
+      - id: grafana/query-metrics
+        path: tools/query-metrics.yaml
+      - id: grafana/query-logs
+        path: tools/query-logs.yaml
+      - id: grafana/datasources
+        path: tools/datasources.yaml
+    prompts:
+      - id: grafana/ops-analyst
+        path: prompts/ops-analyst.md
+    profileTemplates:
+      - id: grafana/weekly-summary
+        path: profiles/weekly-summary.yaml
+    policies: []
+
+  configSchema:
+    type: object
+    properties:
+      grafanaURL:
+        type: string
+      grafanaAPIKey:
+        type: string
+        secret: true
+    required:
+      - grafanaURL
+      - grafanaAPIKey
+
+  permissions:
+    network:
+      outbound:
+        - https
+    sensitiveActions: []
+
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

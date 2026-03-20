@@ -1,0 +1,49 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: grafana-mcp
+  version: 0.1.0
+  description: Grafana MCP bridge — dashboards, alerts, incidents, OnCall, Prometheus, Loki, and more
+spec:
+  category: bridge
+  runtime:
+    type: mcp
+    command:
+      - mcp-grafana
+      - -t
+      - stdio
+    envMapping:
+      grafanaURL: GRAFANA_URL
+      grafanaAPIKey: GRAFANA_API_KEY
+
+  contributes:
+    tools: []           # discovered dynamically from the MCP server at startup
+    prompts:
+      - id: grafana/alert-analyst
+        path: prompts/alert-analyst.md
+    profileTemplates:
+      - id: grafana/alert-summary
+        path: profiles/alert-summary.yaml
+    policies: []
+
+  configSchema:
+    type: object
+    properties:
+      grafanaURL:
+        type: string
+      grafanaAPIKey:
+        type: string
+        secret: true
+    required:
+      - grafanaURL
+      - grafanaAPIKey
+
+  permissions:
+    network:
+      outbound:
+        - https
+    sensitiveActions: []
+
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

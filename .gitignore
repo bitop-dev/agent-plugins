@@ -1,0 +1,4 @@
+# Compiled binaries - rebuild from source
+# bin/ directories are excluded; only source is tracked
+# Exception: pre-built binaries that are intentionally shipped with plugins
+# are committed explicitly

@@ -1,0 +1,27 @@
+id: grafana/alert-events
+kind: tool
+description: >
+  Fetch alert state events for a team over a time range. Returns events from
+  both the Grafana Alertmanager (active/suppressed alerts) and the Prometheus
+  rules API (alert instances with activeAt timestamps). Filters by the 'team'
+  label. Use this to get real historical alert activity, not just current state.
+inputSchema:
+  type: object
+  properties:
+    team:
+      type: string
+      description: Team label value to filter on (e.g. "ict-aipe")
+    from:
+      type: string
+      description: Start of time range in RFC3339 format (e.g. "2026-03-13T00:00:00Z"). Defaults to 7 days ago.
+    to:
+      type: string
+      description: End of time range in RFC3339 format (e.g. "2026-03-20T23:59:59Z"). Defaults to now.
+  required:
+    - team
+execution:
+  mode: command
+  operation: alert-events
+  timeout: 30
+risk:
+  level: low

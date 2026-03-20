@@ -1,0 +1,17 @@
+id: ddg/fetch
+kind: tool
+description: Fetch a web page and return its readable text content (strips HTML, scripts, and styles)
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: Full URL to fetch
+  required:
+    - url
+execution:
+  mode: command
+  operation: fetch
+  timeout: 20
+risk:
+  level: low
