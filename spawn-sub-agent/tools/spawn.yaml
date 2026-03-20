@@ -1,15 +1,26 @@
 id: agent/spawn
 kind: tool
-description: Spawn a bounded sub-agent task using an allowed profile and tool set
+description: >
+  Spawn a bounded sub-agent task using a named profile. Use agent/discover
+  first to find available agents and their capabilities.
 inputSchema:
   type: object
   properties:
     task:
       type: string
+      description: The task for the sub-agent to execute
     profile:
       type: string
+      description: Profile name (use agent/discover to find available profiles)
     maxTurns:
       type: integer
+      description: Maximum model turns for the sub-agent (default 4)
+    context:
+      type: object
+      description: >
+        Structured context passed to the sub-agent. Keys are injected as
+        labeled context before the task. Use for: date, prior_results,
+        constraints, output_format, or any data the sub-agent needs.
   required:
     - task
 execution:
