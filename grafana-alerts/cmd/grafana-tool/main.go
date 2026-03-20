@@ -138,6 +138,17 @@ type alertEvent struct {
 	Source     string            `json:"source"` // "alertmanager" or "rules"
 }
 
+type alertGroup struct {
+	BaseName    string         `json:"baseName"`
+	Hosts       []string       `json:"hosts"`
+	Count       int            `json:"count"`
+	Criticality string         `json:"criticality"`
+	FirstSeen   string         `json:"firstSeen"`
+	LastSeen    string         `json:"lastSeen"`
+	States      map[string]int `json:"states"`
+	StillActive bool           `json:"stillActive"`
+}
+
 func handleAlertEvents(c *client, args map[string]any) {
 	team, _ := args["team"].(string)
 	fromStr, _ := args["from"].(string)
@@ -198,33 +209,144 @@ func handleAlertEvents(c *client, args map[string]any) {
 		events = append(events, ruleEvents...)
 	}
 
-	// Sort by activeAt descending
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].ActiveAt > events[j].ActiveAt
+	// ── Deduplicate and group ──────────────────────────────────────────────
+	// Group by alert base name (strip host suffix for grouping) then show
+	// per-host details. This collapses 293 raw events into a concise summary.
+
+	// Extract base alert name by stripping the host suffix after " - "
+	baseNameOf := func(name string) string {
+		if idx := strings.Index(name, " - "); idx > 0 {
+			return name[:idx]
+		}
+		return name
+	}
+	hostOf := func(e alertEvent) string {
+		if h := e.Labels["host"]; h != "" {
+			return h
+		}
+		// Fall back to the part after " - " in the name
+		if idx := strings.Index(e.Name, " - "); idx > 0 {
+			return e.Name[idx+3:]
+		}
+		return ""
+	}
+
+	groupMap := make(map[string]*alertGroup)
+	var groupOrder []string
+	stateCounts := map[string]int{}
+
+	for _, e := range events {
+		stateCounts[e.State]++
+		base := baseNameOf(e.Name)
+		g, exists := groupMap[base]
+		if !exists {
+			g = &alertGroup{
+				BaseName:    base,
+				Criticality: e.Labels["criticality"],
+				FirstSeen:   e.ActiveAt,
+				LastSeen:    e.ActiveAt,
+				States:      make(map[string]int),
+			}
+			groupMap[base] = g
+			groupOrder = append(groupOrder, base)
+		}
+		g.Count++
+		g.States[e.State]++
+		if e.State == "Alerting" || e.State == "active" || e.State == "suppressed" {
+			g.StillActive = true
+		}
+		host := hostOf(e)
+		if host != "" {
+			found := false
+			for _, h := range g.Hosts {
+				if h == host {
+					found = true
+					break
+				}
+			}
+			if !found {
+				g.Hosts = append(g.Hosts, host)
+			}
+		}
+		if e.ActiveAt < g.FirstSeen || g.FirstSeen == "" {
+			g.FirstSeen = e.ActiveAt
+		}
+		if e.ActiveAt > g.LastSeen {
+			g.LastSeen = e.ActiveAt
+		}
+	}
+
+	// Sort groups: still-active first, then by count descending
+	sort.SliceStable(groupOrder, func(i, j int) bool {
+		gi, gj := groupMap[groupOrder[i]], groupMap[groupOrder[j]]
+		if gi.StillActive != gj.StillActive {
+			return gi.StillActive
+		}
+		return gi.Count > gj.Count
 	})
 
 	// Build text summary
 	var lines []string
 	lines = append(lines, fmt.Sprintf("Alert events for team=%s  from=%s  to=%s",
 		team, from.Format("2006-01-02"), to.Format("2006-01-02")))
-	lines = append(lines, fmt.Sprintf("Total: %d events", len(events)))
+	lines = append(lines, fmt.Sprintf("Total: %d raw events → %d unique alert types across %d hosts",
+		len(events), len(groupOrder), countUniqueHosts(groupMap)))
 	lines = append(lines, "")
 
-	stateCounts := map[string]int{}
-	for _, e := range events {
-		stateCounts[e.State]++
-		crit := e.Labels["criticality"]
-		if crit == "" {
-			crit = "?"
-		}
-		lines = append(lines, fmt.Sprintf("[%s] %-12s crit=%-2s  %s  (since %s)",
-			e.Source[:2], e.State, crit, e.Name, e.ActiveAt))
-	}
-
-	lines = append(lines, "")
+	// State summary first
 	lines = append(lines, "State summary:")
 	for state, count := range stateCounts {
-		lines = append(lines, fmt.Sprintf("  %-20s %d", state, count))
+		lines = append(lines, fmt.Sprintf("  %-30s %d", state, count))
+	}
+	lines = append(lines, "")
+
+	// Active alerts section
+	var activeGroups, resolvedGroups []*alertGroup
+	for _, name := range groupOrder {
+		g := groupMap[name]
+		if g.StillActive {
+			activeGroups = append(activeGroups, g)
+		} else {
+			resolvedGroups = append(resolvedGroups, g)
+		}
+	}
+
+	if len(activeGroups) > 0 {
+		lines = append(lines, fmt.Sprintf("🔴 ACTIVE/SUPPRESSED (%d):", len(activeGroups)))
+		for _, g := range activeGroups {
+			crit := g.Criticality
+			if crit == "" { crit = "?" }
+			hostList := strings.Join(g.Hosts, ", ")
+			if len(hostList) > 80 {
+				hostList = hostList[:80] + fmt.Sprintf("… (+%d more)", len(g.Hosts)-2)
+			}
+			lines = append(lines, fmt.Sprintf("  [crit=%s] %s", crit, g.BaseName))
+			lines = append(lines, fmt.Sprintf("    %dx on %d host(s): %s", g.Count, len(g.Hosts), hostList))
+			lines = append(lines, fmt.Sprintf("    first=%s  last=%s", shortTime(g.FirstSeen), shortTime(g.LastSeen)))
+		}
+		lines = append(lines, "")
+	}
+
+	// Resolved alerts — top 15 by frequency
+	lines = append(lines, fmt.Sprintf("✅ RESOLVED (%d unique alert types):", len(resolvedGroups)))
+	shown := resolvedGroups
+	if len(shown) > 15 {
+		shown = shown[:15]
+	}
+	for _, g := range shown {
+		crit := g.Criticality
+		if crit == "" { crit = "?" }
+		lines = append(lines, fmt.Sprintf("  [crit=%s] %s  (%dx on %d hosts, %s → %s)",
+			crit, g.BaseName, g.Count, len(g.Hosts), shortTime(g.FirstSeen), shortTime(g.LastSeen)))
+	}
+	if len(resolvedGroups) > 15 {
+		lines = append(lines, fmt.Sprintf("  … and %d more resolved alert types", len(resolvedGroups)-15))
+	}
+
+	// Build grouped data for structured output
+	var groupData []any
+	for _, name := range groupOrder {
+		groupData = append(groupData, groupMap[name])
 	}
 
 	writeResponse(response{
@@ -233,9 +355,10 @@ func handleAlertEvents(c *client, args map[string]any) {
 			"team":        team,
 			"from":        from.Format(time.RFC3339),
 			"to":          to.Format(time.RFC3339),
-			"total":       len(events),
+			"totalRaw":    len(events),
+			"uniqueTypes": len(groupOrder),
 			"stateCounts": stateCounts,
-			"events":      events,
+			"groups":      groupData,
 		},
 	})
 }
@@ -751,6 +874,31 @@ func parseTimeRange(fromStr, toStr string) (time.Time, time.Time, error) {
 	}
 
 	return from, to, nil
+}
+
+func shortTime(rfc3339 string) string {
+	t, err := time.Parse(time.RFC3339, rfc3339)
+	if err != nil {
+		// Try without timezone
+		t, err = time.Parse("2006-01-02T15:04:05-07:00", rfc3339)
+		if err != nil {
+			if len(rfc3339) > 16 {
+				return rfc3339[:16]
+			}
+			return rfc3339
+		}
+	}
+	return t.Format("Jan 02 15:04")
+}
+
+func countUniqueHosts(groups map[string]*alertGroup) int {
+	seen := make(map[string]struct{})
+	for _, g := range groups {
+		for _, h := range g.Hosts {
+			seen[h] = struct{}{}
+		}
+	}
+	return len(seen)
 }
 
 func truncate(s string, max int) string {
