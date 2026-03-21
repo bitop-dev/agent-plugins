@@ -1,0 +1,28 @@
+id: agent/remember
+kind: tool
+description: >
+  Store a fact in persistent memory for this agent profile. Memory persists
+  across tasks — future tasks using the same profile can recall stored facts.
+  Use this to remember important findings, dates, decisions, or context
+  that should carry over to future runs.
+inputSchema:
+  type: object
+  properties:
+    key:
+      type: string
+      description: A short key name for the fact (e.g. "last_report_date", "known_issues")
+    value:
+      type: string
+      description: The fact to remember (can be any length)
+    profile:
+      type: string
+      description: Profile to store under (defaults to the current profile)
+  required:
+    - key
+    - value
+execution:
+  mode: host
+  operation: agent-remember
+  timeout: 5
+risk:
+  level: low

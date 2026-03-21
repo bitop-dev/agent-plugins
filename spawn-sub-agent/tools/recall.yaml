@@ -1,0 +1,22 @@
+id: agent/recall
+kind: tool
+description: >
+  Recall facts from persistent memory for this agent profile. Returns
+  previously stored facts from past tasks. Use to check what was learned
+  in previous runs before starting new work.
+inputSchema:
+  type: object
+  properties:
+    key:
+      type: string
+      description: Specific key to recall (omit to get all stored facts for this profile)
+    profile:
+      type: string
+      description: Profile to recall from (defaults to the current profile)
+  required: []
+execution:
+  mode: host
+  operation: agent-recall
+  timeout: 5
+risk:
+  level: low

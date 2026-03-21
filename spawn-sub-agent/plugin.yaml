@@ -18,6 +18,10 @@ spec:
         path: tools/spawn-parallel.yaml
       - id: agent/pipeline
         path: tools/pipeline.yaml
+      - id: agent/remember
+        path: tools/remember.yaml
+      - id: agent/recall
+        path: tools/recall.yaml
     prompts:
       - id: agent/delegation-guidance
         path: prompts/delegation.md
