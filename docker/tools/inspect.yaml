@@ -1,0 +1,14 @@
+id: docker/inspect
+description: "Get detailed information about a Docker container or image"
+runtime:
+  type: command
+  command: ["docker-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    target:
+      type: string
+      description: "Container or image name/ID to inspect"
+  required:
+    - target

@@ -1,0 +1,27 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: http-request
+  version: 0.1.0
+  description: Make HTTP requests to any API endpoint — GET, POST, PUT, DELETE with headers, auth, and JSON parsing
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["http-tool"]
+    mode: json-stdin
+    build:
+      go: cmd/http-tool
+  contributes:
+    tools:
+      - id: http/request
+        path: tools/request.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+    sensitiveActions:
+      - http/request
+    hostCapabilities: []
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

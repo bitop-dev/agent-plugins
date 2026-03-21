@@ -1,0 +1,22 @@
+id: docker/logs
+description: "View logs from a Docker container"
+runtime:
+  type: command
+  command: ["docker-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    container:
+      type: string
+      description: "Container name or ID"
+    tail:
+      type: integer
+      description: "Number of lines from the end (default: 100)"
+      default: 100
+    timestamps:
+      type: boolean
+      description: "Show timestamps"
+      default: false
+  required:
+    - container

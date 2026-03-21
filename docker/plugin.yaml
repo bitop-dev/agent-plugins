@@ -1,0 +1,32 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: docker
+  version: 0.1.0
+  description: Docker container operations — list containers, view logs, inspect, and list images
+spec:
+  category: infrastructure
+  runtime:
+    type: command
+    command: ["docker-tool"]
+    mode: json-stdin
+    build:
+      go: cmd/docker-tool
+  contributes:
+    tools:
+      - id: docker/ps
+        path: tools/ps.yaml
+      - id: docker/logs
+        path: tools/logs.yaml
+      - id: docker/inspect
+        path: tools/inspect.yaml
+      - id: docker/images
+        path: tools/images.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+    sensitiveActions: []
+    hostCapabilities: []
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

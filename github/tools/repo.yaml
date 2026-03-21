@@ -1,0 +1,13 @@
+id: github/repo
+description: "Get repository information — description, stars, forks, language, open issues"
+runtime:
+  type: command
+  command: ["github-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    repo:
+      type: string
+      description: "Repository in owner/name format (e.g. 'golang/go')"
+  required: [repo]

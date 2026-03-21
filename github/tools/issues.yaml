@@ -1,0 +1,21 @@
+id: github/issues
+description: "List repository issues with state, labels, and assignees"
+runtime:
+  type: command
+  command: ["github-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    repo:
+      type: string
+      description: "Repository in owner/name format"
+    state:
+      type: string
+      description: "Issue state: open, closed, all"
+      default: "open"
+    limit:
+      type: integer
+      description: "Max results (default: 10)"
+      default: 10
+  required: [repo]

@@ -1,0 +1,16 @@
+id: github/pr-diff
+description: "Get the diff/patch for a specific pull request — see exactly what changed"
+runtime:
+  type: command
+  command: ["github-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    repo:
+      type: string
+      description: "Repository in owner/name format"
+    number:
+      type: integer
+      description: "Pull request number"
+  required: [repo, number]

@@ -1,0 +1,32 @@
+id: csv/parse
+description: >
+  Parse CSV or TSV data into structured JSON, markdown table, or summary.
+  Handles headers, number detection, and large files with row limits.
+runtime:
+  type: command
+  command: ["csv-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    data:
+      type: string
+      description: "Raw CSV/TSV content to parse"
+    delimiter:
+      type: string
+      description: "Column delimiter (default: comma). Use 'tab' for TSV."
+      default: ","
+    has_header:
+      type: boolean
+      description: "First row is a header row"
+      default: true
+    format:
+      type: string
+      description: "Output format: json, markdown, or summary"
+      default: "json"
+    max_rows:
+      type: integer
+      description: "Maximum rows to return (default: 1000)"
+      default: 1000
+  required:
+    - data

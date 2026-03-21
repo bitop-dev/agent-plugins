@@ -1,0 +1,12 @@
+id: docker/images
+description: "List Docker images on the host"
+runtime:
+  type: command
+  command: ["docker-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    filter:
+      type: string
+      description: "Filter images (e.g. 'reference=nginx')"

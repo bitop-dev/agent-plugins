@@ -3,7 +3,7 @@ kind: Plugin
 metadata:
   name: spawn-sub-agent
   version: 0.1.0
-  description: Privileged orchestration plugin example for spawning sub-agents
+  description: Multi-agent orchestration — discover, spawn, parallel, pipeline, and memory
 spec:
   category: orchestration
   runtime:

@@ -1,0 +1,38 @@
+id: http/request
+description: >
+  Make an HTTP request to any URL. Supports GET, POST, PUT, PATCH, DELETE.
+  Returns status code, headers, and response body. JSON responses are parsed
+  automatically. Use for calling REST APIs, webhooks, or fetching data.
+runtime:
+  type: command
+  command: ["http-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    method:
+      type: string
+      description: "HTTP method (GET, POST, PUT, PATCH, DELETE)"
+      default: "GET"
+    url:
+      type: string
+      description: "Full URL to request (e.g. https://api.example.com/data)"
+    headers:
+      type: object
+      description: "HTTP headers as key-value pairs"
+    body:
+      type: string
+      description: "Request body (JSON string for POST/PUT)"
+    bearer_token:
+      type: string
+      description: "Bearer token for Authorization header"
+    timeout:
+      type: integer
+      description: "Request timeout in seconds (default: 30)"
+      default: 30
+    insecure:
+      type: boolean
+      description: "Skip TLS certificate verification"
+      default: false
+  required:
+    - url

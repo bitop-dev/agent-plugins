@@ -1,0 +1,33 @@
+id: csv/query
+description: >
+  Filter, sort, and select columns from CSV data. Useful for extracting
+  specific information from large datasets without processing the entire file.
+runtime:
+  type: command
+  command: ["csv-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    data:
+      type: string
+      description: "Raw CSV content (with header row)"
+    columns:
+      type: array
+      items:
+        type: string
+      description: "Column names to select (omit for all)"
+    filter_column:
+      type: string
+      description: "Column to filter on"
+    filter_value:
+      type: string
+      description: "Value to match (case-insensitive contains)"
+    sort_column:
+      type: string
+      description: "Column to sort by (ascending)"
+    limit:
+      type: integer
+      description: "Maximum rows to return"
+  required:
+    - data

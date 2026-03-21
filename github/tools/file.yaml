@@ -1,0 +1,19 @@
+id: github/file
+description: "Get file contents from a repository"
+runtime:
+  type: command
+  command: ["github-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    repo:
+      type: string
+      description: "Repository in owner/name format"
+    path:
+      type: string
+      description: "File path in the repository"
+    ref:
+      type: string
+      description: "Branch, tag, or commit SHA (default: default branch)"
+  required: [repo, path]

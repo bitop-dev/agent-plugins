@@ -1,0 +1,28 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: csv-tool
+  version: 0.1.0
+  description: Parse, filter, and query CSV/TSV data — convert to JSON or markdown tables
+spec:
+  category: data
+  runtime:
+    type: command
+    command: ["csv-tool"]
+    mode: json-stdin
+    build:
+      go: cmd/csv-tool
+  contributes:
+    tools:
+      - id: csv/parse
+        path: tools/parse.yaml
+      - id: csv/query
+        path: tools/query.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+    sensitiveActions: []
+    hostCapabilities: []
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

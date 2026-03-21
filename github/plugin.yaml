@@ -1,0 +1,46 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: github
+  version: 0.1.0
+  description: GitHub integration — repos, issues, pull requests, diffs, search, and file contents via the GitHub API
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["github-tool"]
+    mode: json-stdin
+    build:
+      go: cmd/github-tool
+    envMapping:
+      token: GITHUB_TOKEN
+  configSchema:
+    type: object
+    properties:
+      token:
+        type: string
+        description: "GitHub personal access token"
+        envVar: GITHUB_TOKEN
+        secret: true
+  contributes:
+    tools:
+      - id: github/repo
+        path: tools/repo.yaml
+      - id: github/issues
+        path: tools/issues.yaml
+      - id: github/pulls
+        path: tools/pulls.yaml
+      - id: github/pr-diff
+        path: tools/pr-diff.yaml
+      - id: github/search
+        path: tools/search.yaml
+      - id: github/file
+        path: tools/file.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+    sensitiveActions: []
+    hostCapabilities: []
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

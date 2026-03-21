@@ -3,7 +3,7 @@ kind: Plugin
 metadata:
   name: send-email
   version: 0.1.0
-  description: Email drafting and sending plugin example
+  description: Draft and send emails via SMTP — reports, summaries, and notifications
 spec:
   category: integration
   runtime:
