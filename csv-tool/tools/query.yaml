@@ -4,7 +4,7 @@ description: >
   specific information from large datasets without processing the entire file.
 runtime:
   type: command
-  command: ["csv-tool"]
+  command: ["./bin/csv-tool"]
   mode: json-stdin
 schema:
   type: object

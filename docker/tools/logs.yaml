@@ -2,7 +2,7 @@ id: docker/logs
 description: "View logs from a Docker container"
 runtime:
   type: command
-  command: ["docker-tool"]
+  command: ["./bin/docker-tool"]
   mode: json-stdin
 schema:
   type: object

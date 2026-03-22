@@ -8,7 +8,7 @@ spec:
   category: integration
   runtime:
     type: command
-    command: ["http-tool"]
+    command: ["./bin/http-tool"]
     mode: json-stdin
     build:
       go: cmd/http-tool

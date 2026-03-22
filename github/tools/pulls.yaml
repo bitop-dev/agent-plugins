@@ -2,7 +2,7 @@ id: github/pulls
 description: "List pull requests with state, author, and review status"
 runtime:
   type: command
-  command: ["github-tool"]
+  command: ["./bin/github-tool"]
   mode: json-stdin
 schema:
   type: object

@@ -1,0 +1,38 @@
+apiVersion: agent/v1
+kind: Plugin
+metadata:
+  name: searxng
+  version: 0.1.0
+  description: Web search and page fetching via SearXNG metasearch — aggregates Google, Bing, DuckDuckGo and more
+spec:
+  category: integration
+  runtime:
+    type: command
+    command: ["./bin/searxng-tool"]
+    mode: json-stdin
+    build:
+      go: cmd/searxng-tool
+    envMapping:
+      searxngURL: SEARXNG_URL
+  configSchema:
+    type: object
+    properties:
+      searxngURL:
+        type: string
+        description: "SearXNG instance URL"
+        envVar: SEARXNG_URL
+        default: "http://searxng:8888"
+  contributes:
+    tools:
+      - id: web/search
+        path: tools/search.yaml
+      - id: web/fetch
+        path: tools/fetch.yaml
+    prompts: []
+    profileTemplates: []
+    policies: []
+    sensitiveActions: []
+    hostCapabilities: []
+  requires:
+    framework: ">=0.1.0"
+    plugins: []

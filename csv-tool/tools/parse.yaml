@@ -4,7 +4,7 @@ description: >
   Handles headers, number detection, and large files with row limits.
 runtime:
   type: command
-  command: ["csv-tool"]
+  command: ["./bin/csv-tool"]
   mode: json-stdin
 schema:
   type: object

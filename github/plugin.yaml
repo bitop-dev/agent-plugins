@@ -8,7 +8,7 @@ spec:
   category: integration
   runtime:
     type: command
-    command: ["github-tool"]
+    command: ["./bin/github-tool"]
     mode: json-stdin
     build:
       go: cmd/github-tool

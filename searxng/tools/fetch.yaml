@@ -1,0 +1,17 @@
+id: web/fetch
+description: >
+  Fetch a web page and extract its readable text content. Strips HTML tags,
+  scripts, and styles. Useful for reading articles, documentation, and
+  other web content found via web/search.
+runtime:
+  type: command
+  command: ["./bin/searxng-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: "URL to fetch and extract text from"
+  required:
+    - url

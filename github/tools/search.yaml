@@ -2,7 +2,7 @@ id: github/search
 description: "Search GitHub for repositories, code, issues, or users"
 runtime:
   type: command
-  command: ["github-tool"]
+  command: ["./bin/github-tool"]
   mode: json-stdin
 schema:
   type: object

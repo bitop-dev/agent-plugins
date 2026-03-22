@@ -8,7 +8,7 @@ spec:
   category: data
   runtime:
     type: command
-    command: ["csv-tool"]
+    command: ["./bin/csv-tool"]
     mode: json-stdin
     build:
       go: cmd/csv-tool

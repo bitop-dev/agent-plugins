@@ -1,0 +1,28 @@
+id: web/search
+description: >
+  Search the web using SearXNG metasearch engine. Aggregates results from
+  multiple search engines (Google, Bing, DuckDuckGo, etc). Returns titles,
+  URLs, and snippets. Supports time range filtering and category selection.
+runtime:
+  type: command
+  command: ["./bin/searxng-tool"]
+  mode: json-stdin
+schema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: "Search query"
+    categories:
+      type: string
+      description: "Search categories: general, news, science, it, images"
+      default: "general"
+    time_range:
+      type: string
+      description: "Filter by time: day, week, month, year (empty for all time)"
+    max_results:
+      type: integer
+      description: "Maximum results to return (default: 10)"
+      default: 10
+  required:
+    - query

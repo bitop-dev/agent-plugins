@@ -2,7 +2,7 @@ id: github/repo
 description: "Get repository information — description, stars, forks, language, open issues"
 runtime:
   type: command
-  command: ["github-tool"]
+  command: ["./bin/github-tool"]
   mode: json-stdin
 schema:
   type: object

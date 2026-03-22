@@ -8,7 +8,7 @@ spec:
   category: infrastructure
   runtime:
     type: command
-    command: ["docker-tool"]
+    command: ["./bin/docker-tool"]
     mode: json-stdin
     build:
       go: cmd/docker-tool

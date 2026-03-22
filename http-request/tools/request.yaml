@@ -5,7 +5,7 @@ description: >
   automatically. Use for calling REST APIs, webhooks, or fetching data.
 runtime:
   type: command
-  command: ["http-tool"]
+  command: ["./bin/http-tool"]
   mode: json-stdin
 schema:
   type: object

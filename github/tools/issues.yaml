@@ -2,7 +2,7 @@ id: github/issues
 description: "List repository issues with state, labels, and assignees"
 runtime:
   type: command
-  command: ["github-tool"]
+  command: ["./bin/github-tool"]
   mode: json-stdin
 schema:
   type: object

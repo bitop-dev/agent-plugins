@@ -2,7 +2,7 @@ id: github/file
 description: "Get file contents from a repository"
 runtime:
   type: command
-  command: ["github-tool"]
+  command: ["./bin/github-tool"]
   mode: json-stdin
 schema:
   type: object

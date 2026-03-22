@@ -2,7 +2,7 @@ id: docker/ps
 description: "List running Docker containers with status, ports, and image info"
 runtime:
   type: command
-  command: ["docker-tool"]
+  command: ["./bin/docker-tool"]
   mode: json-stdin
 schema:
   type: object
